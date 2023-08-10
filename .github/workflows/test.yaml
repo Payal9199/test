@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 test successful."
+      - run: exit 1
   deploy: 
     runs-on: ubuntu-latest
     steps:
