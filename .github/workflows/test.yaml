@@ -7,11 +7,13 @@ jobs:
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
   test: 
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 test successful."
       - run: exit 1
   deploy: 
+    needs: [test]
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 deploy successful"
