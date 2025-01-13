@@ -1,0 +1,254 @@
+https://www.youtube.com/watch?v=4JYtAf4M88Y&t=264s
+
+https://www.youtube.com/watch?v=s8JRZ7k2Ihs&list=PL6XT0grm_TfgdaAjTmLb4QedMCCMQHISm&index=8
+===============================
+tf-users
+login with that
+create access key and secret access key
+
+aws cli terminal---->
+aws configure
+$ aws configure list
+
+=================================
+*variable task:-
+https://nulldog.com/terraform-tfvars-vs-variablestf-whats-the-difference
+=================================
+*What is terraform?
+Is an open source Infrastructure as code(IaC) tool.
+
+*What is IaC?
+Tools allow you to manage infrastructure with configuration files rather than through a graphical user interface.
+
+*Why it is but?
+IaC allows you to build, change and manage your infrastructure in a safe, consistent and repeatable way by defining resource configurations that you can version, reuse and share.
+
+*workflow of terraform:-
+requirement gathering
+which service or cloud platform they required(multiple service provider are there, they give more flexibility to work with multiple provider i.e., aws, Kubernetes, azure, google etc)
+
+which resources and their properties
+write config file to define infra.
+
+plan- preview the changes terraform will make
+apply- make the changes to your infrastructure
+
+*Multiple cloud platform
+configuration for humans(human readable)
+track resources with state
+collaborate with terraform cloud
+
+{download terraform, aws cli
+create aws account (root acc)
+create iam role- create iam user(tf-users)
+then login with user
+iam role- create access key and secret access key 
+
+temporary purpose
+vs code-create file .env-paste the data in that
+source .env- run this cmd bcoz 
+to check- aws iam list-users
+permanent 
+aws configure
+
+download hashicorp extension(vs code)
+
+main.tf -- provider
+}
+
+*Create, modify and destroy
+terraform init
+terraform plan
+terraform apply
+terraform destroy
+terraform validate
+terraform fmt
+
+*Terraform config
+It uses .tf extension
+Format is HCL
+Declarative language
+State management
+
+*State management
+The state file (terraform.tfstate) maintains a detailed record of the current state of managed resources.
+This state file can be stored locally or remotely, with remote storage options enabling collaborations by sharing the state across teams and environments.
+
+
+*terraform supports JSON format also 
+its already in hcl format
+hcl -its simple easy and in few line of code 
+json - lengthy
+(existing automation file are in json format)
+
+*variables
+
+*outputs
+
+*aws s3 bucket
+create s3 bucket
+upload file in s3 bucket
+
+*random provider
+unique id for s3 bucket (solution on that)(globally)
+
+*remote state management
+action perform using tf config file 
+current state ko track karne ke liye state file hoti hai 
+which is terraform.tfstate (locally only)
+after apply only this will generate
+
+remotely== multiple people access that file for same configuration
+
+# #Remotely access state file and also manage that file
+  # backend "s3" {
+  #   bucket = "payal-bucket-abc0812" #already exist bucket name
+  #   key = "backend.tfstate" #backup of terraform.tfstate file(for which name it can be store in remote)
+  #   region = "ap-south-1"
+  # }
+
+imp****
+The error message you’re seeing indicates that the S3 bucket you’re trying to delete is not empty. To delete the bucket, you’ll need to first remove all the objects within it.
+
+*Here are the steps to resolve this issue:
+List Objects in the Bucket: Use the AWS CLI or AWS Management Console to list all objects in the bucket.
+aws s3 ls s3://payal-bucket-abc0812 --recursive
+
+Delete Objects: Delete all objects in the bucket. You can use the AWS CLI to delete all objects recursively.
+aws s3 rm s3://payal-bucket-abc0812 --recursive
+
+Delete the Bucket: Once the bucket is empty, you can proceed to delete the bucket.
+aws s3 rb s3://payal-bucket-abc0812
+--------------------------------------------------------------------------
+*static website host
+project :- Deploy static website on aws using s3
+-------------------------------------------
+*VPC
+*By default, you can create up to 5 VPCs per AWS region
+In AWS, you can create up to 200 subnets per VPC
+
+vpc, subnets(public and private), route table(subnet association-public)(edit routes- igw), internet gateway(attach to vpc)  
+
+*Data source in terraform
+It allows you to fetch and use information from:- external sources or existing resources within your cloud infrastructure
+Useful for obtaining dynamic data that you need for your configurations.
+Fetch:-
+VPC id from their tags 
+ami id from requirements
+security group id from tags 
+
+*Terraform variables
+variable.tf=
+#ask this value in terminal
+#validation= provide range of value for more clarity and readability
+(condition, error_message)
+
+1.environment var (set TF_VAR_key=value)(provide value)(sensitive data)
+To check a specific environment variable:
+echo %VARIABLE_NAME%
+2.terraform.tfvars(passing the value)
+3.*.auto.tfvars (prod.auto.tfvars)
+4.-var and -var-file 
+use= pass the value from cmd
+(terraform plan -var="instant_type="t2-micro"")
+
+1.environment variable
+2.terraform.tfvars
+3.*.auto.tfvars
+4.-var & -var-file
+1---->2---->3---->4 
+It means that priority wise it considered or accepted the value
+
+
+*Local Variable=(eg., region) 
+use for repetative expression
+present in config file
+in key value format
+
+*Terraform Operators & Expressions - List, Map, Object, Loops
+
+*Terraform Functions
+lower,upper,max,min,length,join,etc.
+
+*Count and for_each 
+Use==Multiple resources are created
+
+
+*Flatten function
+In terraform is used to transform a list of lists into a single, flat list.
+[{},{},{}]
+
+*Terraform modules
+Modules are containers for multiple resources that are used together.
+A module consists of a collection of .tf and/or .tf.json files kept together in a directory.
+
+Modules are the main way to package and reuse resource configurations with terraform.
+
+terraform init(after every module addition)
+required= git install(latest version)
+
+The error you're encountering indicates an SSL certificate issue when trying to download the Terraform modules
+Configure Git to Skip SSL Verification:
+git config --global http.sslVerify false(not for production env)
+
+
+*Terraform Registry - Publish our module
+git->new->create repo->public->license(mit lic)->copy url-->git clone
+terraform GitHub module
+git clone (http code link)
+git status
+git add .
+git status
+git commit -m "type message here"
+git push
+
+terraform registry(login->GitHub)
+git tag "v1.0"
+git push --tags
+git tag "v1.0.0"
+git push --tags
+
+*Terraform dependency or terraform depends on
+create resources in the correct order
+
+*Resource Lifecycle
+
+Lifecycle keyword use to ignore_changes:-
+    #create_before_destroy = true (creadted after ami id change and then destroy)(used for website run continusly)
+    #prevent_destroy = true(prevent from accidental destroy)
+    #replace_triggered_by = [aws_security_group.main, aws_security_group.main.ingress]
+
+*Pre and Post 
+condition-Resource Validation
+
+
+*Terraform state modifications:Track the resource state
+terraform state
+terraform state list
+(resource name change in config file without destroying and creating new one.)
+
+terraform state mv aws_instnace.main aws_instance.myserver(successfully move)
+terraform state show aws_instance.myserver
+
+terraform state rm aws_security_group.main
+terraform state list
+
+*Terraform Import Cmd
+terraform import is a command in Terraform that allows you to import existing infrastructure resources into your Terraform state.
+
+Use Case:
+-Assuming you have already created an EC2 instance.
+-Create a resource block in tf config (initially you can keep it empty)
+-Use terraform import command
+  terraform import aws_instance.main ec2_id
+-Terraform show to inspect the imported resource.
+-Update the resource block accordingly.
+
+
+*Terraform CLI Workspace
+Allows you to manage multiple sets of infrastructure configurations within a single configuration directory.
+Each workspace has its own state file.
+
+=====================================================================================================================
+task :
+create bucket upload file and delete that bucket
